@@ -1,0 +1,16 @@
+spring:
+  application:
+      name: ai-code
+server:
+  port: 8123
+  servlet:
+    context-path: /api
+springdoc:
+  groupp-configs:
+    - group: "default"
+      packages-to-scan: com.xhr.aicode.controller
+
+knife4j:
+  enable: true
+  setting:
+    language: zh-cn
