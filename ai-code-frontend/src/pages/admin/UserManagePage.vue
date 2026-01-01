@@ -49,6 +49,8 @@ import { listUserVoByPage } from '@/api/userController'
 import { deleteUser } from '@/api/userController'
 import { message } from 'ant-design-vue'
 import { computed } from 'vue'
+import type { TablePaginationConfig } from 'ant-design-vue'
+
 
 import dayjs from 'dayjs'
 
@@ -126,7 +128,7 @@ const pagination = computed(() => {
 })
 
 // 表格变化处理
-const doTableChange = (page: any) => {
+const doTableChange = (page: TablePaginationConfig) => {
   searchParams.pageNum = page.current
   searchParams.pageSize = page.pageSize
   fetchData()
