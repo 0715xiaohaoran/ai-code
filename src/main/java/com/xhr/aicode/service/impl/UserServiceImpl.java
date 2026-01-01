@@ -15,6 +15,7 @@ import com.xhr.aicode.model.vo.LoginUserVO;
 import com.xhr.aicode.model.vo.UserVO;
 import com.xhr.aicode.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
@@ -111,7 +112,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>  implements U
     @Override
     public User getLoginUser(HttpServletRequest request) {
         // 先判断是否已登录
-        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        // 修复：使用getSession(false)避免为未登录用户创建新会话，并检查会话是否存在
+        HttpSession session = request.getSession(false);
+        if (session == null) {
+            throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
+        }
+        Object userObj = session.getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
         if (currentUser == null || currentUser.getId() == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN_ERROR);
