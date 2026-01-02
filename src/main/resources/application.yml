@@ -1,6 +1,8 @@
 spring:
   application:
       name: ai-code
+  profiles:
+    active: local
 
   # mysql
   datasource:
