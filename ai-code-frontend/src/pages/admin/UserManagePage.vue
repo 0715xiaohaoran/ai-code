@@ -14,7 +14,6 @@
     </a-form>
     <a-divider />
     <!-- 表格 -->
-
     <a-table
       :columns="columns"
       :data-source="data"
@@ -44,14 +43,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, onMounted } from 'vue'
-import { listUserVoByPage } from '@/api/userController'
-import { deleteUser } from '@/api/userController'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { deleteUser, listUserVoByPage } from '@/api/userController.ts'
 import { message } from 'ant-design-vue'
-import { computed } from 'vue'
-import type { TablePaginationConfig } from 'ant-design-vue'
-
-
 import dayjs from 'dayjs'
 
 const columns = [
@@ -88,14 +82,15 @@ const columns = [
     key: 'action',
   },
 ]
-// 数据
+
+// 展示的数据
 const data = ref<API.UserVO[]>([])
 const total = ref(0)
 
 // 搜索条件
 const searchParams = reactive<API.UserQueryRequest>({
   pageNum: 1,
-  pageSize: 1,
+  pageSize: 10,
 })
 
 // 获取数据
@@ -111,11 +106,6 @@ const fetchData = async () => {
   }
 }
 
-// 页面加载时请求一次
-onMounted(() => {
-  fetchData()
-})
-
 // 分页参数
 const pagination = computed(() => {
   return {
@@ -127,14 +117,14 @@ const pagination = computed(() => {
   }
 })
 
-// 表格变化处理
-const doTableChange = (page: TablePaginationConfig) => {
+// 表格分页变化时的操作
+const doTableChange = (page: { current: number; pageSize: number }) => {
   searchParams.pageNum = page.current
   searchParams.pageSize = page.pageSize
   fetchData()
 }
 
-// 获取数据
+// 搜索数据
 const doSearch = () => {
   // 重置页码
   searchParams.pageNum = 1
@@ -142,7 +132,7 @@ const doSearch = () => {
 }
 
 // 删除数据
-const doDelete = async (id: number) => {
+const doDelete = async (id: string) => {
   if (!id) {
     return
   }
@@ -155,4 +145,17 @@ const doDelete = async (id: number) => {
     message.error('删除失败')
   }
 }
+
+// 页面加载时请求一次
+onMounted(() => {
+  fetchData()
+})
 </script>
+
+<style scoped>
+#userManagePage {
+  padding: 24px;
+  background: white;
+  margin-top: 16px;
+}
+</style>
